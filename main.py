@@ -50,7 +50,7 @@ with sqlite3.connect("Banya_birthday_database.db") as db:
         with open("Birthdaybot.log", "a") as logfile:
             logfile.write(f"{logdatenow}-бот был запущен\n")
             logfile.write(f",{logdatenow}----Сегодня событий нет\n")
-
+a = 1
 
 
 
