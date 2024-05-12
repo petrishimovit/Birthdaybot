@@ -4,38 +4,57 @@ import sqlite3
 from telebot import types
 import datetime
 
-months = {
-"января": 1,
-"февраля": 2,
-"марта": 3,
-"апреля": 4,
-"мая": 5,
-"июня": 6,
-"июля": 7,
-"августа": 8,
-"сентября": 9,
-"октября": 10,
-"ноября": 11,
-"декабря": 12
-}
 
 
 
+def converter_day_month(date_sqlite_format):
+
+    # Разделяем строку на день и месяц
+    day, month = map(int, date_sqlite_format.split('-'))
 
 
-bot = telebot.TeleBot('7027598404:AAFiF8XYzjvgceMrg_MvMG9W0Lpp_9OSyd0')#токенбота
+    day, month = month, day
+
+
+    months = ['Января','Февраля', 'Марта', 'Апреля', 'Мая', 'Июня',
+              'Июля', 'Августа', 'Сентябя', 'Октября', 'Ноября', 'Декабря']
+
+
+    if 1 <= month <= 12:
+        return f'{day} {months[month - 1]}'
+
+
+    else:
+        return f"Неверный формат даты: {date_sqlite_format}"
+
+
+allinfo = ""
+
+
+bot = telebot.TeleBot('7027598404:AAGkSY5MIScCcBXI8YUQxZRJ-_5SU-Bqs34')#токенбота
 current_chat = "-1002004314793"
-
-@bot.message_handler(commands=["start","начать","стартуй","стартануть","new"])#будем обрабытывать команды "start","начать","стартуй","стартануть","new" и отвечать на них описанием чо мы умеем как бы говоря
+"""ОБРАБОТКА КОМАНДЫ START"""
+@bot.message_handler(commands=["start","начать","стартуй","стартануть","new"])
 def description(message):
     with open("description.txt","r" , encoding="utf-8") as description_file:
         bot.send_message(message.chat.id, description_file.read() )
+"""ОБРАБОТКА КОМАНДЫ INFO"""
+@bot.message_handler(commands=["info","information","i"])
+def info(message):
+    with open("info.txt","r" , encoding="utf-8") as info_file:
+        bot.send_message(message.chat.id, info_file.read() )
+"""ОБРАБОТКА КОМАНДЫ DATA"""
+@bot.message_handler(commands=["date","data","d"])
+def info(message):
+    bot.send_message(message.chat.id, f"Сегодня {logdatenow}" )
 
 
 day_now = str(datetime.datetime.now().day)
 month_now=str(datetime.datetime.now().month)
 datenow = (f"{month_now}-{day_now}")
-logdatenow = datetime.datetime.now()
+logdatenow = datetime.datetime.now().strftime('%Y-%m-%d')
+
+
 
 """ФУНКЦИЯ ЧТОБЫ В ДЕНЬ РОЖДЕНИЯ ПРИСЫЛАТЬ АЛЕРТ"""
 with sqlite3.connect("Banya_birthday_database.db") as db:
@@ -65,7 +84,6 @@ with sqlite3.connect("Banya_birthday_database.db") as db:
 
 
 
-
 with sqlite3.connect("Banya_birthday_database.db") as db:
     allbirthday = ["start"]
     cur = db.cursor()
@@ -75,8 +93,47 @@ with sqlite3.connect("Banya_birthday_database.db") as db:
         for n in i:
             allbirthday.append(n)
 for _ in allbirthday:
-    if allbirthday.index(_) % 3 == 0 and allbirthday.index(_) != 0 :
-        print(_)
+
+
+    if allbirthday.index(_) % 3 == 0 and allbirthday.index(_) != 0:
+
+
+        allbirthday[allbirthday.index(_)] = str(converter_day_month(_))
+
+
+        input_for_tele_name = allbirthday.index(str(converter_day_month(_))) - 1
+
+
+        input_for_tele_surname = allbirthday.index(str(converter_day_month(_))) - 2
+
+
+
+        allinfonow = allbirthday[input_for_tele_name] + " " + allbirthday[input_for_tele_surname] + " " + str(
+                converter_day_month(_))
+
+        allinfo += f"{allinfonow}\n"
+
+
+print(allinfo)
+"""ОБРАБОТКА КОМАНДЫ GETBIRTHDAY"""
+@bot.message_handler(commands=["get","getbirthdays"])
+def getbirthday_checker(message):
+    bot.send_message(chat_id=current_chat, text=allinfo)
+
+
+
+
+
+
+
+
+# allbirthday[input_for_tele_name],allbirthday[input_for_tele_surname],str(converter_day_month(_)
+
+
+
+
+
+
 
 
 

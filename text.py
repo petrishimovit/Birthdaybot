@@ -1,18 +1,14 @@
-import sqlite3
-with sqlite3.connect("Banya_birthday_database.db") as db:
-    allbirthday = ["start"]
-    cur = db.cursor()
-    cur.execute("""SELECT * FROM banya """)
-    allbirthday_sqlite = cur.fetchall()
-    for i in allbirthday_sqlite:
-        # print(i)
-        for n in i:
+def converter_day_month(date_sqlite_format):
+    day, month = map(int, date_sqlite_format.split('-'))
 
-            allbirthday.append(n)
 
-print(allbirthday)
-#     for i in allbirthday_sqlite:
-#         for n in i:
-#             allbirthday = []
-#             allbirthday.append(n)
-# print(allbirthday,allbirthday_sqlite)
+    months = ['Января', 'Февраля', 'Марта', 'Апреля', 'Мая', 'Июня',
+              'Июля', 'Августа', 'Сентября', 'Октября', 'Ноября', 'Декабря']
+
+
+    if 1 <= month <= 12:
+        return f'{day} {months[month - 1]}'
+    else:
+        return f"Неверный формат даты: {date_sqlite_format}"
+print(converter_day_month("1-5"))
+
