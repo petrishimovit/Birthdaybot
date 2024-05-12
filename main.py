@@ -4,7 +4,20 @@ import sqlite3
 from telebot import types
 import datetime
 
-
+months = {
+"января": 1,
+"февраля": 2,
+"марта": 3,
+"апреля": 4,
+"мая": 5,
+"июня": 6,
+"июля": 7,
+"августа": 8,
+"сентября": 9,
+"октября": 10,
+"ноября": 11,
+"декабря": 12
+}
 
 
 
@@ -37,7 +50,6 @@ with sqlite3.connect("Banya_birthday_database.db") as db:
         birthdayboystat = cur.fetchall()
         db.commit()
 
-        print(birthdayboystat)
         birthday_boy_name = str(birthdayboystat[0][0])
         birthday_boy_surname = str(birthdayboystat[0][1])
         bot.send_message(chat_id=current_chat,
@@ -49,7 +61,24 @@ with sqlite3.connect("Banya_birthday_database.db") as db:
         print(f"{datenow}-Сегодня событий нет")
         with open("Birthdaybot.log", "a") as logfile:
             logfile.write(f"{logdatenow}-бот был запущен\n")
-            logfile.write(f",{logdatenow}----Сегодня событий нет\n")
+            logfile.write(f"{logdatenow}----Сегодня событий нет\n")
+
+
+
+
+with sqlite3.connect("Banya_birthday_database.db") as db:
+    allbirthday = ["start"]
+    cur = db.cursor()
+    cur.execute("""SELECT * FROM banya """)
+    allbirthday_sqlite = cur.fetchall()
+    for i in allbirthday_sqlite:
+        for n in i:
+            allbirthday.append(n)
+for _ in allbirthday:
+    if allbirthday.index(_) % 3 == 0 and allbirthday.index(_) != 0 :
+        print(_)
+
+
 
 
 
