@@ -27,6 +27,23 @@ def converter_day_month(date_sqlite_format):
     else:
         return f"Неверный формат даты: {date_sqlite_format}"
 
+def convert_into_iso(date_str):
+    day, month = date_str.split('-')
+
+
+    day = int(day)
+    month = int(month)
+
+
+    year = 2024
+
+    # Возвращаем дату в формате ГГГГ-ММ-ДД
+    return f"{year}-{day:02d}-{month:02d}"
+
+
+
+db_birthday = []
+
 
 allinfo = ""
 
@@ -131,10 +148,26 @@ def getbirthday_checker(message):
 
 
 
+with sqlite3.connect("Banya_birthday_database.db") as db:
+    allbirthday = ["start"]
+    cur = db.cursor()
+    cur.execute("""SELECT * FROM banya """)
+    allbirthday_sqlite = cur.fetchall()
+    for i in allbirthday_sqlite:
+        for n in i:
+            allbirthday.append(n)
+            db_birthday.extend(allbirthday)
+for _ in db_birthday:
+
+
+    if db_birthday.index(_) % 3 == 0 and db_birthday.index(_) != 0:
+
+
+        db_birthday[db_birthday.index(_)] = str(convert_into_iso(_))
 
 
 
-
+print(db_birthday)
 
 
 
