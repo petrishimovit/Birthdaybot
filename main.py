@@ -3,6 +3,13 @@ import webbrowser
 import sqlite3
 from telebot import types
 import datetime
+from datetime import datetime, timedelta, date
+
+day_now = str(datetime.now().day)
+month_now=str(datetime.now().month)
+datenow = (f"{month_now}-{day_now}")
+logdatenow = str(date.today())
+datetoseconds = datetime.now()
 
 
 
@@ -44,32 +51,38 @@ def convert_into_iso(date_str):
 
 db_birthday = []
 
-
+allinfo_db = ""
 allinfo = ""
 
 
 bot = telebot.TeleBot('7027598404:AAGkSY5MIScCcBXI8YUQxZRJ-_5SU-Bqs34')#токенбота
 current_chat = "-1002004314793"
+
+
+
 """ОБРАБОТКА КОМАНДЫ START"""
 @bot.message_handler(commands=["start","начать","стартуй","стартануть","new"])
 def description(message):
     with open("description.txt","r" , encoding="utf-8") as description_file:
         bot.send_message(message.chat.id, description_file.read() )
+
+
+
 """ОБРАБОТКА КОМАНДЫ INFO"""
 @bot.message_handler(commands=["info","information","i"])
 def info(message):
     with open("info.txt","r" , encoding="utf-8") as info_file:
         bot.send_message(message.chat.id, info_file.read() )
+
+
+
+
 """ОБРАБОТКА КОМАНДЫ DATA"""
 @bot.message_handler(commands=["date","data","d"])
 def info(message):
     bot.send_message(message.chat.id, f"Сегодня {logdatenow}" )
 
 
-day_now = str(datetime.datetime.now().day)
-month_now=str(datetime.datetime.now().month)
-datenow = (f"{month_now}-{day_now}")
-logdatenow = datetime.datetime.now().strftime('%Y-%m-%d')
 
 
 
@@ -131,7 +144,7 @@ for _ in allbirthday:
         allinfo += f"{allinfonow}\n"
 
 
-print(allinfo)
+
 """ОБРАБОТКА КОМАНДЫ GETBIRTHDAY"""
 @bot.message_handler(commands=["get","getbirthdays"])
 def getbirthday_checker(message):
@@ -148,6 +161,22 @@ def getbirthday_checker(message):
 
 
 
+
+
+db_birthday = []
+allinfo_db = ""
+def convert_into_iso(date_str):
+    day, month = date_str.split('-')
+
+
+    day = int(day)
+    month = int(month)
+
+
+    year = 2024
+
+    return f"{year}-{day:02d}-{month:02d}"
+
 with sqlite3.connect("Banya_birthday_database.db") as db:
     allbirthday = ["start"]
     cur = db.cursor()
@@ -156,18 +185,48 @@ with sqlite3.connect("Banya_birthday_database.db") as db:
     for i in allbirthday_sqlite:
         for n in i:
             allbirthday.append(n)
-            db_birthday.extend(allbirthday)
-for _ in db_birthday:
+            iso_birthday = allbirthday.copy()
+for _ in iso_birthday:
 
 
-    if db_birthday.index(_) % 3 == 0 and db_birthday.index(_) != 0:
+    if iso_birthday.index(_) % 3 == 0 and iso_birthday.index(_) != 0:
+
+        indexation = iso_birthday.index(_)
+        surname_indexation = indexation - 1
+        name_indexation = indexation - 2
+        isoconverted = str(convert_into_iso(_))
 
 
-        db_birthday[db_birthday.index(_)] = str(convert_into_iso(_))
+        iso_birthday[indexation] = convert_into_iso(_)
+        three_days_earlier_for_alert = datetime.strptime(isoconverted, '%Y-%m-%d') - timedelta(days=3)
+        if datetoseconds == three_days_earlier_for_alert:
+            bot.send_message(chat_id=current_chat,text=f"НАПОМИНАНИЕ ! через 3 дня день рождения у {name_indexation} {surname_indexation } ")
 
 
 
-print(db_birthday)
+        # date_early_alert = date_for_early - timedelta(days=3)
+
+        # print(iso_birthday.index(_))+6
+
+        # input_for_tele_name = iso_birthday.index(indexation)
+
+
+        input_for_tele_name = iso_birthday[name_indexation]
+        #
+        input_for_tele_surname = iso_birthday[surname_indexation]
+        #
+        allinfonow_iso = str(input_for_tele_name + " " + input_for_tele_surname+ " " + isoconverted)
+
+         #
+         #
+         # if str(convert_into_iso(_)) == (logdatenow - timedelta(days=3)):
+         #    bot.send_message(chat_id=current_chat,text=f'Напоминаем у {input_for_tele_name} {input_for_tele_surname} через 3 дня день рождения!')
+         #
+         #
+         #
+         #
+
+
 
 
 
