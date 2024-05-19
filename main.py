@@ -187,28 +187,17 @@ with sqlite3.connect("Banya_birthday_database.db") as db:
             allbirthday.append(n)
             iso_birthday = allbirthday.copy()
 for _ in iso_birthday:
-
-
     if iso_birthday.index(_) % 3 == 0 and iso_birthday.index(_) != 0:
 
         indexation = iso_birthday.index(_)
         surname_indexation = indexation - 1
         name_indexation = indexation - 2
         isoconverted = str(convert_into_iso(_))
-
-
         iso_birthday[indexation] = convert_into_iso(_)
         three_days_earlier_for_alert = datetime.strptime(isoconverted, '%Y-%m-%d') - timedelta(days=3)
         if datetoseconds == three_days_earlier_for_alert:
-            bot.send_message(chat_id=current_chat,text=f"НАПОМИНАНИЕ ! через 3 дня день рождения у {name_indexation} {surname_indexation } ")
-
-
-
-        # date_early_alert = date_for_early - timedelta(days=3)
-
-        # print(iso_birthday.index(_))+6
-
-        # input_for_tele_name = iso_birthday.index(indexation)
+            print(f"НАПОМИНАНИЕ ! через 3 дня день рождения у {name_indexation} {surname_indexation } ")
+         bot.send_message(chat_id=current_chat,text=f"НАПОМИНАНИЕ ! через 3 дня день рождения у {name_indexation} {surname_indexation } ")
 
 
         input_for_tele_name = iso_birthday[name_indexation]
@@ -217,7 +206,8 @@ for _ in iso_birthday:
         #
         allinfonow_iso = str(input_for_tele_name + " " + input_for_tele_surname+ " " + isoconverted)
 
-         #
+
+
          #
          # if str(convert_into_iso(_)) == (logdatenow - timedelta(days=3)):
          #    bot.send_message(chat_id=current_chat,text=f'Напоминаем у {input_for_tele_name} {input_for_tele_surname} через 3 дня день рождения!')
