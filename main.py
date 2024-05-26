@@ -6,6 +6,7 @@ import datetime
 from datetime import datetime, timedelta, date
 import asyncio
 import threading
+from time import sleep
 
 
 
@@ -85,11 +86,63 @@ bot = telebot.TeleBot('7027598404:AAGkSY5MIScCcBXI8YUQxZRJ-_5SU-Bqs34')#токе
 current_chat = "-1002004314793"
 
 """ОБРАБОТКА КОМАНДЫ GETBIRTHDAY"""
+"""ПО КОМАНДЕ"""
 @bot.message_handler(commands=["getbirthdays","geybirthdays","get"])
 def description(message):
     with open("birthdays.txt","r" , encoding="utf-8") as birthdday_file:
         markup_inline = types.InlineKeyboardMarkup()
-        button_for_getbirthday = types.InlineKeyboardButton(text = "У кого ближайший день рождения?" ,callback_data = "/near")
+        button_for_getbirthday = types.InlineKeyboardButton(text = "У кого ближайший день рождения?" ,callback_data="/near")
+        markup_inline.add(button_for_getbirthday)
+        bot.send_message(chat_id=current_chat, text=birthdday_file.read() , reply_markup=markup_inline)
+@bot.callback_query_handler(func = lambda call: True)
+def answer(call):
+    listfor_neardate = []
+    with sqlite3.connect("Banya_birthday_database.db") as db:
+        allbirthday = ["start"]
+        cur = db.cursor()
+        cur.execute("""SELECT * FROM banya """)
+        allinfonow_iso = ""
+
+        allbirthday_sqlite = cur.fetchall()
+        for i in allbirthday_sqlite:
+
+            for n in i:
+                allbirthday.append(n)
+                iso_birthday = allbirthday.copy()
+
+    for _ in iso_birthday:
+        if iso_birthday.index(_) % 3 == 0 and iso_birthday.index(_) != 0:
+            indexation = iso_birthday.index(_)
+
+            surname_indexation = indexation - 1
+            name_indexation = indexation - 2
+            isoconverted = str(convert_into_iso(_))
+            iso_birthday[indexation] = isoconverted
+
+            iso_birthday[indexation] = isoconverted
+
+            listfor_neardate.append(isoconverted)
+
+            future_dates = []
+
+            current_date = datetime.now().date()
+            future_dates = []
+
+    for date_str in listfor_neardate:
+        date = datetime.strptime(date_str, "%Y-%m-%d").date()
+        if date > current_date:
+            future_dates.append(date)
+
+    if future_dates:
+        nearest_date = min(future_dates)
+        bot.send_message(chat_id=current_chat,
+                         text=f"Ближайший день рождения у {iso_birthday[iso_birthday.index((nearest_date).isoformat()) - 1]} {iso_birthday[iso_birthday.index((nearest_date).isoformat()) - 2]} - {convert_date_to_text(nearest_date)}  ")
+"""ПО КНОПКЕ"""
+@bot.message_handler(func=lambda message: message.text == "Все дни рождения")
+def description(message):
+    with open("birthdays.txt","r" , encoding="utf-8") as birthdday_file:
+        markup_inline = types.InlineKeyboardMarkup()
+        button_for_getbirthday = types.InlineKeyboardButton(text = "У кого ближайший день рождения?" ,callback_data="/near")
         markup_inline.add(button_for_getbirthday)
         bot.send_message(chat_id=current_chat, text=birthdday_file.read() , reply_markup=markup_inline)
 @bot.callback_query_handler(func = lambda call: True)
@@ -139,14 +192,45 @@ def answer(call):
 
 
 """ОБРАБОТКА КОМАНДЫ START"""
+"""ПО КОМАНДЕ"""
 @bot.message_handler(commands=["start","начать","стартуй","стартануть","new"])
 def description(message):
     with open("description.txt","r" , encoding="utf-8") as description_file:
-        bot.send_message(message.chat.id, description_file.read() )
 
+        markupforallusers = types.ReplyKeyboardMarkup()
+        button_near = types.KeyboardButton(text="У кого ближайший день рождения?",)
+        button_info = types.KeyboardButton(text="Вывести информацию о боте")
+        button_get = types.KeyboardButton(text="Все дни рождения")
+        button_start = types.KeyboardButton(text="Перезапустить бота ")
+        button_data = types.KeyboardButton(text="Вывести текущую дату")
+        markupforallusers.row(button_near,button_info,button_data)
+        markupforallusers.row(button_get,button_start )
+        bot.send_message(message.chat.id, description_file.read(), reply_markup =markupforallusers)
+"""ПО КНОПКЕ"""
+
+@bot.message_handler(func=lambda message: message.text == "Перезапустить бота")
+def description(message):
+    with open("description.txt","r" , encoding="utf-8") as description_file:
+
+        markupforallusers = types.ReplyKeyboardMarkup()
+        button_near = types.KeyboardButton(text="У кого ближайший день рождения?",)
+        button_info = types.KeyboardButton(text="Вывести информацию о боте")
+        button_get = types.KeyboardButton(text="Все дни рождения")
+        button_start = types.KeyboardButton(text="Перезапустить бота ")
+        button_data = types.KeyboardButton(text="Вывести текущую дату")
+        markupforallusers.row(button_near,button_info,button_data)
+        markupforallusers.row(button_get,button_start )
+        bot.send_message(message.chat.id, description_file.read(), reply_markup =markupforallusers)
 
 
 """ОБРАБОТКА КОМАНДЫ INFO"""
+
+"""ПО КНОПКЕ"""
+@bot.message_handler(func=lambda message: message.text == "Вывести информацию о боте")
+def info(message):
+    with open("info.txt","r" , encoding="utf-8") as info_file:
+        bot.send_message(message.chat.id, info_file.read() )
+"""ПО КОМАНДЕ"""
 @bot.message_handler(commands=["info","information","i"])
 def info(message):
     with open("info.txt","r" , encoding="utf-8") as info_file:
@@ -155,14 +239,80 @@ def info(message):
 
 
 
+
+
+
+
+
+
+
+
+
+
 """ОБРАБОТКА КОМАНДЫ DATA"""
+"""ПО КОМАНДЕ"""
 @bot.message_handler(commands=["date","data","d"])
 def info(message):
     bot.send_message(message.chat.id, f"Сегодня {logdatenow}" )
+"""ПО КНОПКЕ"""
+
+
+@bot.message_handler(func=lambda message: message.text == "Вывести текущую дату")
+def info(message):
+    bot.send_message(message.chat.id, f"Сегодня {logdatenow}")
+
 
 
 """ФУНКЦИЯ ДЛЯ БЛИЖАЙШЕГО ДНЯ РОЖДЕНИЯ"""
+
+"""ПО КОМАНДЕ ИЛИ ПО ИНЛАЙН """
 @bot.message_handler(commands=["ближайшийдр","nearbirthday","near"])
+def nearbirthday(message):
+    listfor_neardate = []
+    with sqlite3.connect("Banya_birthday_database.db") as db:
+        allbirthday = ["start"]
+        cur = db.cursor()
+        cur.execute("""SELECT * FROM banya """)
+        allinfonow_iso = ""
+
+        allbirthday_sqlite = cur.fetchall()
+        for i in allbirthday_sqlite:
+
+            for n in i:
+                allbirthday.append(n)
+                iso_birthday = allbirthday.copy()
+
+    for _ in iso_birthday:
+        if iso_birthday.index(_) % 3 == 0 and iso_birthday.index(_) != 0:
+            indexation = iso_birthday.index(_)
+
+            surname_indexation = indexation - 1
+            name_indexation = indexation - 2
+            isoconverted = str(convert_into_iso(_))
+            iso_birthday[indexation] = isoconverted
+
+            iso_birthday[indexation] = isoconverted
+
+            listfor_neardate.append(isoconverted)
+
+            future_dates = []
+
+
+            current_date = datetime.now().date()
+            future_dates = []
+
+    for date_str in listfor_neardate:
+        date = datetime.strptime(date_str, "%Y-%m-%d").date()
+        if date > current_date:
+            future_dates.append(date)
+
+    if future_dates:
+
+        nearest_date = min(future_dates)
+        bot.send_message(chat_id=current_chat,
+                         text = f"Ближайший день рождения у {iso_birthday[iso_birthday.index((nearest_date).isoformat()) - 1]} {iso_birthday[iso_birthday.index((nearest_date).isoformat()) - 2]} - {convert_date_to_text(nearest_date)}  ")
+"""ПО КНОПКЕ"""
+@bot.message_handler(func=lambda message: message.text == "У кого ближайший день рождения?")
 def nearbirthday(message):
     listfor_neardate = []
     with sqlite3.connect("Banya_birthday_database.db") as db:
@@ -308,9 +458,16 @@ thread_three_days_to_alert.start()
 
 
 
+while True:
+    try:
+        bot.polling(none_stop=True)
+    except Exception as _ex:
+        print(_ex)
+        sleep(1)
 
 
-
+with open("Birthdaybot.log", "a") as logfile:
+    logfile.write(f"{logdatenow}-бот отключился \n")
 
 # allbirthday[input_for_tele_name],allbirthday[input_for_tele_surname],str(converter_day_month(_)
 
@@ -340,9 +497,6 @@ thread_three_days_to_alert.start()
 
 
 
-
-
-bot.polling(none_stop=True)
 
 
 # @bot.message_handler(commands=['dr'])
