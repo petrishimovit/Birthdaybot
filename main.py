@@ -82,8 +82,8 @@ allinfo_db = ""
 allinfo = ""
 
 
-bot = telebot.TeleBot('7027598404:AAGkSY5MIScCcBXI8YUQxZRJ-_5SU-Bqs34')#токенбота
-current_chat = "-1002004314793"
+bot = telebot.TeleBot('7372617816:AAE4YCI5m2T3vrw9pBAB4KRfNwZGZgJEY4M')#токенбота
+current_chat = "-876905705"
 
 """ОБРАБОТКА КОМАНДЫ GETBIRTHDAY"""
 """ПО КОМАНДЕ"""
@@ -201,32 +201,19 @@ def description(message):
         button_near = types.KeyboardButton(text="У кого ближайший день рождения?",)
         button_info = types.KeyboardButton(text="Вывести информацию о боте")
         button_get = types.KeyboardButton(text="Все дни рождения")
-        button_start = types.KeyboardButton(text="Перезапустить бота ")
+        button_start = types.KeyboardButton(text="Помощь")
         button_data = types.KeyboardButton(text="Вывести текущую дату")
-        markupforallusers.row(button_near,button_info,button_data)
+        markupforallusers.row(button_near,)
         markupforallusers.row(button_get,button_start )
         bot.send_message(message.chat.id, description_file.read(), reply_markup =markupforallusers)
-"""ПО КНОПКЕ"""
 
-@bot.message_handler(func=lambda message: message.text == "Перезапустить бота")
-def description(message):
-    with open("description.txt","r" , encoding="utf-8") as description_file:
 
-        markupforallusers = types.ReplyKeyboardMarkup()
-        button_near = types.KeyboardButton(text="У кого ближайший день рождения?",)
-        button_info = types.KeyboardButton(text="Вывести информацию о боте")
-        button_get = types.KeyboardButton(text="Все дни рождения")
-        button_start = types.KeyboardButton(text="Перезапустить бота ")
-        button_data = types.KeyboardButton(text="Вывести текущую дату")
-        markupforallusers.row(button_near,button_info,button_data)
-        markupforallusers.row(button_get,button_start )
-        bot.send_message(message.chat.id, description_file.read(), reply_markup =markupforallusers)
 
 
 """ОБРАБОТКА КОМАНДЫ INFO"""
 
 """ПО КНОПКЕ"""
-@bot.message_handler(func=lambda message: message.text == "Вывести информацию о боте")
+@bot.message_handler(func=lambda message: message.text == "Помощь")
 def info(message):
     with open("info.txt","r" , encoding="utf-8") as info_file:
         bot.send_message(message.chat.id, info_file.read() )

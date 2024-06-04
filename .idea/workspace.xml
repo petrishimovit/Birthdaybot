@@ -6,12 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="ee163ee4-455c-478e-b4fb-d2a038e0c813" name="Changes" comment="first full working build">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Banya_birthday_database.db" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Birthdaybot.log" beforeDir="false" afterPath="$PROJECT_DIR$/Birthdaybot.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Birthdaybotaddnew.py" beforeDir="false" afterPath="$PROJECT_DIR$/Birthdaybotaddnew.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/birthdays.txt" beforeDir="false" afterPath="$PROJECT_DIR$/birthdays.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/description.txt" beforeDir="false" afterPath="$PROJECT_DIR$/description.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/info.txt" beforeDir="false" afterPath="$PROJECT_DIR$/info.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -140,7 +136,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-babbdf50b680-746f403e7f0c-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-241.15989.155" />
+        <option value="bundled-python-sdk-48aec45f0201-746f403e7f0c-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-241.17011.127" />
       </set>
     </attachedChunks>
   </component>
